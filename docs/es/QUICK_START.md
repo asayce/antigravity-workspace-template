@@ -96,7 +96,7 @@ python src/agent.py
 └── .antigravity/        # Reglas de Antigravity
 ```
 
-Consulta [Estructura del Proyecto](../PROJECT_STRUCTURE.md) para detalles.
+Consulta [Estructura del Proyecto](../README.md#project-structure) para detalles.
 
 ## 🧪 Ejecutar Pruebas
 
