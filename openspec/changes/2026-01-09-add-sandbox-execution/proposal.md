@@ -224,6 +224,6 @@ Every execution produces:
 
 ## References
 
-- Original proposal: [docs/en/SANDBOX_CODE_EXEC_ENV_PROPOSALmd](../../../docs/en/SANDBOX_CODE_EXEC_ENV_PROPOSALmd)
+- Original proposal: [docs/en/SANDBOX_CODE_EXEC_ENV_PROPOSAL.md](../../../docs/en/SANDBOX_CODE_EXEC_ENV_PROPOSAL.md)
 - Roadmap Phase 9A: [docs/en/ROADMAP.md](../../../docs/en/ROADMAP.md#phase-9a-sandbox-environment-)
 - Issue #9: Sandbox Environment Dilemma
