@@ -14,7 +14,6 @@ This module implements:
 import asyncio
 import json
 import os
-from pathlib import Path
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple
 from dataclasses import dataclass, field
 
@@ -92,7 +91,7 @@ class MCPClientManager:
         Returns:
             List of MCPServerConfig objects
         """
-        config_file = Path(self.config_path)
+        config_file = settings.resolve_path(self.config_path)
 
         if not config_file.exists():
             print(f"   ⚠️ MCP config file not found: {config_file}")

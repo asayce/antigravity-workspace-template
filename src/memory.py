@@ -1,5 +1,4 @@
 import json
-import os
 from typing import Any, Callable, Dict, List, Optional
 from src.config import settings
 
@@ -7,8 +6,16 @@ from src.config import settings
 class MemoryManager:
     """Simple JSON-file based memory manager for the agent."""
 
-    def __init__(self, memory_file: str = settings.MEMORY_FILE):
-        self.memory_file = memory_file
+    def __init__(self, memory_file: Optional[str] = None):
+        """
+        Initialize memory storage.
+
+        Args:
+            memory_file: Optional path override. Relative paths are resolved
+                against project root for deterministic workspace-local storage.
+        """
+        target_memory_file = memory_file or settings.MEMORY_FILE
+        self.memory_file = settings.resolve_path(target_memory_file)
         self.summary: str = ""
         self._memory: List[Dict[str, Any]] = []
         self._load_memory()
@@ -16,9 +23,9 @@ class MemoryManager:
     def _load_memory(self):
         """Loads memory from the JSON file if it exists."""
         self.summary = ""
-        if os.path.exists(self.memory_file):
+        if self.memory_file.exists():
             try:
-                with open(self.memory_file, 'r', encoding='utf-8') as f:
+                with open(self.memory_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
                 if isinstance(data, dict):
                     self.summary = data.get("summary", "") or ""
@@ -28,10 +35,14 @@ class MemoryManager:
                     # Backward compatibility for legacy memory files
                     self._memory = data
                 else:
-                    print(f"Warning: Unexpected memory format in {self.memory_file}. Starting fresh.")
+                    print(
+                        f"Warning: Unexpected memory format in {self.memory_file}. Starting fresh."
+                    )
                     self._memory = []
             except json.JSONDecodeError:
-                print(f"Warning: Could not decode memory file {self.memory_file}. Starting fresh.")
+                print(
+                    f"Warning: Could not decode memory file {self.memory_file}. Starting fresh."
+                )
                 self._memory = []
         else:
             self._memory = []
@@ -42,7 +53,8 @@ class MemoryManager:
             "summary": self.summary,
             "history": self._memory,
         }
-        with open(self.memory_file, 'w', encoding='utf-8') as f:
+        self.memory_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.memory_file, "w", encoding="utf-8") as f:
             json.dump(payload, f, indent=2, ensure_ascii=False)
 
     def add_entry(self, role: str, content: str, metadata: Optional[Dict[str, Any]] = None):

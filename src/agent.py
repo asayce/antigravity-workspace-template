@@ -35,6 +35,7 @@ class GeminiAgent:
 
     def __init__(self):
         self.settings = settings
+        self._ensure_workspace_paths()
         self.memory = MemoryManager()
         self.mcp_manager = None  # Will be initialized if MCP is enabled
         self.use_openai_backend = False  # Use OpenAI-compatible backend when configured
@@ -117,6 +118,10 @@ class GeminiAgent:
                         self.models = self._Models()
 
                 self.client = _DummyClientFallback()
+
+    def _ensure_workspace_paths(self) -> None:
+        """Create required workspace directories using anchored paths."""
+        self.settings.artifacts_path.mkdir(parents=True, exist_ok=True)
 
     def _initialize_mcp(self) -> None:
         """
@@ -513,6 +518,9 @@ class GeminiAgent:
 
 
 if __name__ == "__main__":
+    # Anchor relative file writes (plans, logs, memory) to the project workspace.
+    os.chdir(PROJECT_ROOT)
+
     # Allow overriding the task via CLI args or AGENT_TASK env var
     task = " ".join(sys.argv[1:]).strip() or os.environ.get(
         "AGENT_TASK", "帮助我查看今天的天气"
